@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">4Chess</string>
+    <string name="make_room">Make Room</string>
+    <string name="enjoy_room">Enjoy Room</string>
+    <string name="input_ip">Input Room IP</string>
+
+    <string name="ok">OK</string>
+    <string name="close">CLOSE</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
