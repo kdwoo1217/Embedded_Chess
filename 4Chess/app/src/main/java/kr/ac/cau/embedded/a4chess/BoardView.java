@@ -9,6 +9,7 @@ import android.view.View;
 
 import kr.ac.cau.embedded.a4chess.chess.Board;
 import kr.ac.cau.embedded.a4chess.chess.Coordinate;
+import kr.ac.cau.embedded.a4chess.chess.Game;
 import kr.ac.cau.embedded.a4chess.chess.pieces.Piece;
 
 public class BoardView extends View {

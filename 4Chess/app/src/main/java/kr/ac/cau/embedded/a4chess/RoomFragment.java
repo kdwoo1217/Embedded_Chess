@@ -7,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import kr.ac.cau.embedded.a4chess.chess.Game;
+import kr.ac.cau.embedded.a4chess.chess.Match;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -47,6 +50,8 @@ public class RoomFragment extends Fragment {
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Match match = new Match(String.valueOf(System.currentTimeMillis()));
+                Game.newGame(match);
                 ((MainActivity) getActivity()).changeGameFragment();
             }
         });
