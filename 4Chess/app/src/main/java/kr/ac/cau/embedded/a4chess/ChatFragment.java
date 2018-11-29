@@ -1,12 +1,19 @@
 package kr.ac.cau.embedded.a4chess;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import kr.ac.cau.embedded.a4chess.Chat.ChatMessage;
+import kr.ac.cau.embedded.a4chess.Chat.MessageAdapter;
 
 
 /**
@@ -19,9 +26,17 @@ import android.view.ViewGroup;
 public class ChatFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
 
+    private ListView listView;
+    private Button btnSend;
+    private Button btnReceive;
+
+    private List<ChatMessage> chatMessages;
+    private ArrayAdapter<ChatMessage> adapter;
+
     public ChatFragment() {
         // Required empty public constructor
     }
+
 
     /**
      * Use this factory method to create a new instance of
@@ -43,7 +58,40 @@ public class ChatFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chat, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_chat, container, false);
+
+        chatMessages = new ArrayList<>();
+
+        btnSend = (Button) view.findViewById(R.id.send_btn);
+        btnReceive = (Button) view.findViewById(R.id.receive_btn);
+
+        listView = (ListView) view.findViewById(R.id.chat_list);
+
+        adapter = new MessageAdapter(getActivity(), R.layout.fragment_chat, chatMessages);
+
+        listView.setAdapter(adapter);
+
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ChatMessage chatMessage = new ChatMessage("player1", true);
+                chatMessages.add(chatMessage);
+                adapter.notifyDataSetChanged();
+                //listView.invalidate();
+            }
+        });
+
+        btnReceive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ChatMessage chatMessage = new ChatMessage("player2", false);
+                chatMessages.add(chatMessage);
+                adapter.notifyDataSetChanged();
+                //listView.invalidate();
+            }
+        });
+
+        return view;
     }
 }
