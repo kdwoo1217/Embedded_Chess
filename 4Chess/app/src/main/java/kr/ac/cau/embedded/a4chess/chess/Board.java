@@ -1,10 +1,17 @@
 package kr.ac.cau.embedded.a4chess.chess;
 
+import android.util.Pair;
+
+import kr.ac.cau.embedded.a4chess.chess.pieces.Bishop;
 import kr.ac.cau.embedded.a4chess.chess.pieces.DownPawn;
+import kr.ac.cau.embedded.a4chess.chess.pieces.King;
+import kr.ac.cau.embedded.a4chess.chess.pieces.Knight;
 import kr.ac.cau.embedded.a4chess.chess.pieces.LeftPawn;
 import kr.ac.cau.embedded.a4chess.chess.pieces.Pawn;
 import kr.ac.cau.embedded.a4chess.chess.pieces.Piece;
+import kr.ac.cau.embedded.a4chess.chess.pieces.Queen;
 import kr.ac.cau.embedded.a4chess.chess.pieces.RightPawn;
+import kr.ac.cau.embedded.a4chess.chess.pieces.Rook;
 
 public class Board {
     private static Piece[][] BoardState;
@@ -50,14 +57,14 @@ public class Board {
                     new DownPawn(new Coordinate(x, yStart), playerId) :
                     new Pawn(new Coordinate(x, yStart), playerId);
         }
-//        BoardState[xStart][yEnd] = new Rook(new Coordinate(xStart, yEnd), playerId);
-//        BoardState[xStart + 1][yEnd] = new Knight(new Coordinate(xStart + 1, yEnd), playerId);
-//        BoardState[xStart + 2][yEnd] = new Bishop(new Coordinate(xStart + 2, yEnd), playerId);
-//        BoardState[xStart + 3][yEnd] = new Queen(new Coordinate(xStart + 3, yEnd), playerId);
-//        BoardState[xStart + 4][yEnd] = new King(new Coordinate(xStart + 4, yEnd), playerId);
-//        BoardState[xStart + 5][yEnd] = new Bishop(new Coordinate(xStart + 5, yEnd), playerId);
-//        BoardState[xStart + 6][yEnd] = new Knight(new Coordinate(xStart + 6, yEnd), playerId);
-//        BoardState[xStart + 7][yEnd] = new Rook(new Coordinate(xStart + 7, yEnd), playerId);
+        BoardState[xStart][yEnd] = new Rook(new Coordinate(xStart, yEnd), playerId);
+        BoardState[xStart + 1][yEnd] = new Knight(new Coordinate(xStart + 1, yEnd), playerId);
+        BoardState[xStart + 2][yEnd] = new Bishop(new Coordinate(xStart + 2, yEnd), playerId);
+        BoardState[xStart + 3][yEnd] = new Queen(new Coordinate(xStart + 3, yEnd), playerId);
+        BoardState[xStart + 4][yEnd] = new King(new Coordinate(xStart + 4, yEnd), playerId);
+        BoardState[xStart + 5][yEnd] = new Bishop(new Coordinate(xStart + 5, yEnd), playerId);
+        BoardState[xStart + 6][yEnd] = new Knight(new Coordinate(xStart + 6, yEnd), playerId);
+        BoardState[xStart + 7][yEnd] = new Rook(new Coordinate(xStart + 7, yEnd), playerId);
     }
 
     private static void setupPlayerLeftRight(int xStart, int xEnd, final String playerId) {
@@ -67,13 +74,56 @@ public class Board {
                             new RightPawn(new Coordinate(xStart, y), playerId) :
                             new LeftPawn(new Coordinate(xStart, y), playerId);
         }
-//        BoardState[xEnd][2] = new Rook(new Coordinate(xEnd, 2), playerId);
-//        BoardState[xEnd][3] = new Knight(new Coordinate(xEnd, 3), playerId);
-//        BoardState[xEnd][4] = new Bishop(new Coordinate(xEnd, 4), playerId);
-//        BoardState[xEnd][5] = new King(new Coordinate(xEnd, 5), playerId);
-//        BoardState[xEnd][6] = new Queen(new Coordinate(xEnd, 6), playerId);
-//        BoardState[xEnd][7] = new Bishop(new Coordinate(xEnd, 7), playerId);
-//        BoardState[xEnd][8] = new Knight(new Coordinate(xEnd, 8), playerId);
-//        BoardState[xEnd][9] = new Rook(new Coordinate(xEnd, 9), playerId);
+        BoardState[xEnd][3] = new Rook(new Coordinate(xEnd, 3), playerId);
+        BoardState[xEnd][4] = new Knight(new Coordinate(xEnd, 4), playerId);
+        BoardState[xEnd][5] = new Bishop(new Coordinate(xEnd, 5), playerId);
+        BoardState[xEnd][6] = new King(new Coordinate(xEnd, 6), playerId);
+        BoardState[xEnd][7] = new Queen(new Coordinate(xEnd, 7), playerId);
+        BoardState[xEnd][8] = new Bishop(new Coordinate(xEnd, 8), playerId);
+        BoardState[xEnd][9] = new Knight(new Coordinate(xEnd, 9), playerId);
+        BoardState[xEnd][10] = new Rook(new Coordinate(xEnd, 10), playerId);
+    }
+
+    public static boolean move(final Coordinate oldPosition, final Coordinate newPosition) {
+        if (!Game.myTurn()) {
+            return false;
+        }
+
+        if (!newPosition.isValid()) {
+            return false; // not a valid new position
+        }
+
+        Piece piece = BoardState[oldPosition.x][oldPosition.y];
+        if (!piece.getPossiblePositions().contains(newPosition)) {
+            return false; // not possible to move there
+        }
+
+        Piece target = BoardState[newPosition.x][newPosition.y];
+
+        // move the piece
+        BoardState[newPosition.x][newPosition.y] = BoardState[oldPosition.x][oldPosition.y];
+        BoardState[oldPosition.x][oldPosition.y] = null;
+        piece.position = newPosition;
+
+        Game.getPlayer(Game.currentPlayer()).lastMove =
+                new Pair<Coordinate, Coordinate>(oldPosition, newPosition);
+
+        if (target != null && target instanceof King && Game.removePlayer(target.getPlayerId())) {
+            // game ended
+            Game.over();
+        } else {
+            Game.moved();
+        }
+        return true;
+    }
+
+    public static void removePlayer(final String playerId) {
+        for (int x = 0; x < boardSize; x++) {
+            for (int y = 0; y < boardSize; y++) {
+                if (BoardState[x][y] != null && playerId.equals(BoardState[x][y].getPlayerId())) {
+                    BoardState[x][y] = null;
+                }
+            }
+        }
     }
 }

@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import kr.ac.cau.embedded.a4chess.chess.Board;
@@ -16,6 +17,8 @@ public class BoardView extends View {
 
     private final Paint boardPaint = new Paint();
     private final Paint textPaint = new Paint();
+
+    private Coordinate selection;
 
     public BoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -49,11 +52,46 @@ public class BoardView extends View {
                     }
                 }
             }
+            if (selection != null && (piece = Board.getPiece(selection)) != null) {
+                boardPaint.setAlpha(128);
+                boardPaint.setColor(Color.CYAN);
+                canvas.drawCircle(selection.x * cellWidth + cellWidth / 2,
+                        (boardSize - selection.y - 1) * cellWidth + cellWidth / 2, cellWidth / 2, boardPaint);
+                textPaint.setColor(Game.getPlayerColor(piece.getPlayerId()));
+                canvas.drawText(piece.getString(), selection.x * cellWidth,
+                        (boardSize - selection.y) * cellWidth - 10, textPaint);
+                for (Coordinate possible : piece.getPossiblePositions()) {
+                    drawCoordinate(possible, canvas, cellWidth, boardPaint, boardSize);
+                }
+            }
         }
     }
 
-    private void drawCoordinate(final Coordinate c, final Canvas canvas, final float cellWidth, final Paint paint, int boardSize) {
-        canvas.drawRect(c.x * cellWidth, (boardSize - c.y - 1) * cellWidth, (c.x + 1) * cellWidth,
-                (boardSize - c.y) * cellWidth, paint);
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            int boardSize = Board.getBoardSize();
+            int x = (int) (event.getX() / getHeight() * boardSize);
+            int y = boardSize - 1 - (int) (event.getY() / getHeight() * boardSize);
+            Coordinate coordinate = new Coordinate(x, y);
+            if (coordinate.isValid() && Board.getPiece(coordinate) != null &&
+                    Board.getPiece(coordinate).getPlayerId().equals(Game.currentPlayer())) {
+                selection = coordinate;
+                invalidate();
+            } else {
+                if (selection != null) { // we have a piece selected and clicked on a new position
+                    if (Board.move(selection, coordinate)) {
+                        selection = null;
+                        invalidate();
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private void drawCoordinate(final Coordinate coordinate, final Canvas canvas, final float cellWidth, final Paint paint, int boardSize) {
+        canvas.drawRect(coordinate.x * cellWidth, (boardSize - coordinate.y - 1) * cellWidth, (coordinate.x + 1) * cellWidth,
+                (boardSize - coordinate.y) * cellWidth, paint);
     }
 }

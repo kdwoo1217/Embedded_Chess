@@ -6,6 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import kr.ac.cau.embedded.a4chess.chess.Game;
+import kr.ac.cau.embedded.a4chess.chess.Player;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -51,5 +54,9 @@ public class GameFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_game, container, false);
 
         return view;
+    }
+
+    public void updateTurn() {
+
     }
 }

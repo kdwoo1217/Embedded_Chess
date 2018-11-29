@@ -31,4 +31,10 @@ public class Coordinate {
                 !(x <= 2 && y >= boardSize - 3) && // upper left
                 !(x >= boardSize - 3 && y >= boardSize - 3); // upper right
     }
+
+    @Override
+    public boolean equals(final Object other) {
+        return other instanceof Coordinate &&
+                ((Coordinate) other).x == x && ((Coordinate) other).y == y;
+    }
 }

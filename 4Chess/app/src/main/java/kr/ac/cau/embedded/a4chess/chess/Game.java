@@ -5,12 +5,14 @@ import android.graphics.Color;
 import java.util.LinkedList;
 import java.util.List;
 
-import kr.ac.cau.embedded.a4chess.BuildConfig;
+import kr.ac.cau.embedded.a4chess.GameFragment;
 
 public class Game {
     public static Match match;
     public static Player[] players;
     public static int turns;
+
+    public static GameFragment UI;
 
     private static List<String> deadPlayers;
     private final static int[] PLAYER_COLOR = {
@@ -49,6 +51,45 @@ public class Game {
                     new Player(String.valueOf(i), i / 2,
                             PLAYER_COLOR[i], "Player " + (i + 1));
         }
+    }
+
+    public static boolean removePlayer(final String playerId) {
+        if (players.length > 2) Board.removePlayer(playerId);
+        deadPlayers.add(playerId);
+        return isGameOver();
+    }
+
+    public static void moved() {
+        turns++;
+        String next = players[turns % players.length].id;
+        while (deadPlayers.contains(next)) {
+            turns++; // skip dead players
+            next = players[turns % players.length].id;
+        }
+        if (next.startsWith("AutoMatch_")) {
+            next = null;
+        }
+        if (UI != null) {
+            UI.updateTurn();
+        }
+    }
+
+    public static void over() {
+
+    }
+
+    public static boolean isGameOver() {
+        return (players.length - deadPlayers.size() <= 1) ||
+                (deadPlayers.size() == 2 && sameTeam(deadPlayers.get(0), deadPlayers.get(1)));
+    }
+
+    public static String currentPlayer() {
+        return players[turns % players.length].id;
+    }
+
+    public static boolean myTurn() {
+//        return match.isLocal || myPlayerId.equals(players[turns % players.length].id);
+        return true;
     }
 
     public static boolean sameTeam(final String id1, final String id2) {
