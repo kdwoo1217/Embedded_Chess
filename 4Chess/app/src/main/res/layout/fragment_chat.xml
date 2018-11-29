@@ -9,16 +9,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/white"
             android:orientation="vertical">
+
             <ListView
                 android:id="@+id/chat_list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </ListView>
+                android:layout_height="match_parent"
+                android:divider="@null"
+                android:listSelector="@android:color/transparent"
+                android:transcriptMode="alwaysScroll" />
+
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -26,10 +33,12 @@
                 android:orientation="horizontal"
                 android:layout_gravity="bottom">
                 <Button
+                    android:id="@+id/receive_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Test Receive"/>
                 <Button
+                    android:id="@+id/send_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Test Send"/>
