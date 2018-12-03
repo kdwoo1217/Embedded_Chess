@@ -17,6 +17,10 @@ public class Board {
     private static Piece[][] BoardState;
     private static final int boardSize = 14;
 
+    private static Piece LastDeletes;
+    private static Coordinate LastOld;
+    private static Coordinate LastNew;
+
     private Board() { }
 
     public static int getBoardSize() {
@@ -115,6 +119,34 @@ public class Board {
             Game.moved();
         }
         return true;
+    }
+
+    //After calls test_move, u must call test_retreat!
+    public static void test_move(final Coordinate oldPosition, final Coordinate newPosition) {
+
+        Piece piece = BoardState[oldPosition.x][oldPosition.y];
+        Piece target = BoardState[newPosition.x][newPosition.y];
+
+        // move the piece
+        BoardState[newPosition.x][newPosition.y] = BoardState[oldPosition.x][oldPosition.y];
+        BoardState[oldPosition.x][oldPosition.y] = null;
+        piece.position = newPosition;
+
+        LastDeletes = target;
+        LastOld = oldPosition;
+        LastNew = newPosition;
+    }
+
+    public static void test_retreat() {
+        Piece piece = BoardState[LastNew.x][LastNew.y];
+
+        BoardState[LastOld.x][LastOld.y] = BoardState[LastNew.x][LastNew.y];
+        BoardState[LastNew.x][LastNew.y] = LastDeletes;
+        piece.position = LastOld;
+
+        LastDeletes = null;
+        LastOld = null;
+        LastNew = null;
     }
 
     public static void removePlayer(final String playerId) {
