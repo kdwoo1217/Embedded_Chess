@@ -2,11 +2,27 @@ package kr.ac.cau.embedded.a4chess.chess;
 
 import java.util.List;
 import java.util.ArrayList;
+import android.util.Log;
 
 import kr.ac.cau.embedded.a4chess.chess.pieces.Piece;
 import kr.ac.cau.embedded.a4chess.chess.pieces.King;
 
 public class Board_ConditionChecker {
+
+    public static String checkPlayerCondition(String PlayerId) {
+        if(isPlyaerChecked(PlayerId)){
+            if(isCheckMated(PlayerId))
+                return "checkmate";
+            else
+                return "check";
+        }
+        else{
+            if(isStaleMated(PlayerId))
+                return "stalemate";
+            else
+                return "none";
+        }
+    }
 
     public static boolean isPlyaerChecked(String PlayerId) {
 
@@ -17,6 +33,9 @@ public class Board_ConditionChecker {
         //being under check condition.
         for(int i = 0 ; i < Board.getBoardSize(); i ++) {
             for(int j = 0; j < Board.getBoardSize(); j++) {
+                if(Board.getPiece(new Coordinate(i,j)) == null){
+                    continue;
+                }
                 if( !Game.sameTeam(Board.getPiece(new Coordinate(i, j)).getPlayerId(), PlayerId)
                         && Board.getPiece(new Coordinate(i, j)).getPossiblePositions().contains(currentPlayerKingCoordinate)){
                         return true;
@@ -34,11 +53,13 @@ public class Board_ConditionChecker {
             return false;
 
         /* Look All possible moves of player */
-        List<Coordinate> enemyAttackPath = new ArrayList<Coordinate>();
         boolean isCheckMated = true;
 
         for (int i = 0; i < Board.getBoardSize(); i++) {
             for (int j = 0; j < Board.getBoardSize(); j++) {
+                if(Board.getPiece(new Coordinate(i,j)) == null){
+                    continue;
+                }
                 Coordinate playerPiecePos = new Coordinate(i, j);
                 if (Board.getPiece(playerPiecePos).getPlayerId() == PlayerId) {
                     for(Coordinate elem : Board.getPiece(playerPiecePos).getPossiblePositions()){
@@ -55,18 +76,20 @@ public class Board_ConditionChecker {
         return true;
     }
 
-    public static boolean isStaleMated(Piece[][] BoardState, String PlayerId) {
+    public static boolean isStaleMated(String PlayerId) {
 
         /* if Player is not under check condition, return. */
         if(isPlyaerChecked(PlayerId))
             return false;
 
         /* Look All possible moves of player */
-        List<Coordinate> enemyAttackPath = new ArrayList<Coordinate>();
         boolean isCheckMated = true;
 
         for (int i = 0; i < Board.getBoardSize(); i++) {
             for (int j = 0; j < Board.getBoardSize(); j++) {
+                if(Board.getPiece(new Coordinate(i,j)) == null){
+                    continue;
+                }
                 Coordinate playerPiecePos = new Coordinate(i, j);
                 if (Board.getPiece(playerPiecePos).getPlayerId() == PlayerId) {
                     for(Coordinate elem : Board.getPiece(playerPiecePos).getPossiblePositions()){
@@ -87,6 +110,9 @@ public class Board_ConditionChecker {
         //get Player's current king coordinate
         for(int i = 0 ; i < Board.getBoardSize(); i ++) {
             for(int j = 0; j < Board.getBoardSize(); j++) {
+                if(Board.getPiece(new Coordinate(i,j)) == null){
+                    continue;
+                }
                 if(Board.getPiece(new Coordinate(i, j)).getPlayerId() == PlayerId
                         && Board.getPiece(new Coordinate(i, j)) instanceof King){
                     return Board.getPiece(new Coordinate(i, j));

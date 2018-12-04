@@ -1,5 +1,6 @@
 package kr.ac.cau.embedded.a4chess.chess;
 
+import android.util.Log;
 import android.util.Pair;
 
 import kr.ac.cau.embedded.a4chess.chess.pieces.Bishop;
@@ -104,10 +105,17 @@ public class Board {
 
         Piece target = BoardState[newPosition.x][newPosition.y];
 
+        // Castling
+
         // move the piece
         BoardState[newPosition.x][newPosition.y] = BoardState[oldPosition.x][oldPosition.y];
         BoardState[oldPosition.x][oldPosition.y] = null;
         piece.position = newPosition;
+
+        for(Player elem : Game.players)
+        {
+            Log.d("CHECK", "Player " + elem.id +  " is under " + Board_ConditionChecker.checkPlayerCondition(elem.id));
+        }
 
         Game.getPlayer(Game.currentPlayer()).lastMove =
                 new Pair<Coordinate, Coordinate>(oldPosition, newPosition);
