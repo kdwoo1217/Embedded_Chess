@@ -2,6 +2,7 @@ package kr.ac.cau.embedded.a4chess.chess;
 
 import android.graphics.Color;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,12 +16,6 @@ public class Game {
     public static GameFragment UI;
 
     private static List<String> deadPlayers;
-    private final static int[] PLAYER_COLOR = {
-            Color.parseColor("#FF8800"),
-            Color.parseColor("#99CC00"),
-            Color.parseColor("#33B5E5"),
-            Color.parseColor("#CC0000")
-    };
 
     public static int getPlayerColor(String id) {
         return getPlayer(id).color;
@@ -35,21 +30,26 @@ public class Game {
         return null;
     }
 
-    public static void newGame(final Match match) {
+    public static boolean isAlivePlayer(String id) {
+        if(deadPlayers.contains(id) == false) {
+            return true;
+        }
+        return false;
+    }
+
+    public static void newGame(final Match match, final ArrayList<Player> playerList) {
         Game.match = match;
         turns = 0;
         deadPlayers = new LinkedList<String>();
-        createPlayers();
+        createPlayers(playerList);
         Board.newGame(players);
     }
 
-    private static void createPlayers() {
+    private static void createPlayers(final ArrayList<Player> playerList) {
         int numPlayers = match.getNumPlayers();
         players = new Player[numPlayers];
         for (int i = 0; i < numPlayers; i++) {
-            players[i] =
-                    new Player(String.valueOf(i), i / 2,
-                            PLAYER_COLOR[i], "Player " + (i + 1));
+            players[i] = playerList.get(i);
         }
     }
 
@@ -75,7 +75,9 @@ public class Game {
     }
 
     public static void over() {
-
+        if (UI != null) {
+            UI.gameOverLocal(getWinner());
+        }
     }
 
     public static boolean isGameOver() {
@@ -94,5 +96,14 @@ public class Game {
 
     public static boolean sameTeam(final String id1, final String id2) {
         return getPlayer(id1).team == getPlayer(id2).team;
+    }
+
+    private static Player getWinner() {
+        for (Player p : players) {
+            if (!deadPlayers.contains(p.id)) {
+                return p;
+            }
+        }
+        return null;
     }
 }

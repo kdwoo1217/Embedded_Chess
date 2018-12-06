@@ -5,20 +5,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-<<<<<<< HEAD
 import android.widget.ListView;
-=======
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import kr.ac.cau.embedded.a4chess.Chat.ChatMessage;
 import kr.ac.cau.embedded.a4chess.Chat.MessageAdapter;
-
->>>>>>> f934bf4d0e0fc682cbbc4c364c384fac11759377
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,13 +57,6 @@ public class ChatFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-<<<<<<< HEAD
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_chat, container, false);
-        ListView listView = (ListView)view.findViewById(R.id.chat_list);
-
-        listView.invalidate();
-=======
 
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
@@ -102,7 +90,6 @@ public class ChatFragment extends Fragment {
                 //listView.invalidate();
             }
         });
->>>>>>> f934bf4d0e0fc682cbbc4c364c384fac11759377
 
         return view;
     }

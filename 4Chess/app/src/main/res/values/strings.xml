@@ -3,7 +3,11 @@
     <string name="make_room">Make Room</string>
     <string name="enjoy_room">Enjoy Room</string>
     <string name="input_ip">Input Room IP</string>
+    <string name="room_ip">Room IP :</string>
 
+    <string name="gameover">Game Over</string>
+
+    <string name="start">START</string>
     <string name="ok">OK</string>
     <string name="close">CLOSE</string>
 

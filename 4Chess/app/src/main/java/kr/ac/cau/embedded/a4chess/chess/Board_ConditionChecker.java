@@ -10,18 +10,20 @@ import kr.ac.cau.embedded.a4chess.chess.pieces.King;
 public class Board_ConditionChecker {
 
     public static String checkPlayerCondition(String PlayerId) {
-        if(isPlyaerChecked(PlayerId)){
-            if(isCheckMated(PlayerId))
-                return "checkmate";
-            else
-                return "check";
+        if(Game.isAlivePlayer(PlayerId)) {
+            if (isPlyaerChecked(PlayerId)) {
+                if (isCheckMated(PlayerId))
+                    return "checkmate";
+                else
+                    return "check";
+            } else {
+                if (isStaleMated(PlayerId))
+                    return "stalemate";
+                else
+                    return "none";
+            }
         }
-        else{
-            if(isStaleMated(PlayerId))
-                return "stalemate";
-            else
-                return "none";
-        }
+        return "none";
     }
 
     public static boolean isPlyaerChecked(String PlayerId) {

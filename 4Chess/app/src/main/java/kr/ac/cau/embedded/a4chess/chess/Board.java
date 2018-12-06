@@ -112,11 +112,6 @@ public class Board {
         BoardState[oldPosition.x][oldPosition.y] = null;
         piece.position = newPosition;
 
-        for(Player elem : Game.players)
-        {
-            Log.d("CHECK", "Player " + elem.id +  " is under " + Board_ConditionChecker.checkPlayerCondition(elem.id));
-        }
-
         Game.getPlayer(Game.currentPlayer()).lastMove =
                 new Pair<Coordinate, Coordinate>(oldPosition, newPosition);
 
@@ -126,6 +121,12 @@ public class Board {
         } else {
             Game.moved();
         }
+
+        for(Player elem : Game.players)
+        {
+            Log.d("CHECK", "Player " + elem.id +  " is under " + Board_ConditionChecker.checkPlayerCondition(elem.id));
+        }
+
         return true;
     }
 
