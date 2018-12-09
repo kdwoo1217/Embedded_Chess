@@ -81,10 +81,12 @@ public class RoomFragment extends Fragment {
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Player player = new Player(playerNum.toString(), playerNum / 2,
-                        PLAYER_COLOR[playerNum], "Player" + (++playerNum), "192.168.0." + playerNum);
-                playerItems.add(player);
-                playerListAdapter.notifyDataSetChanged();
+                if(playerItems.size() < 4) {
+                    Player player = new Player(playerNum.toString(), playerNum / 2,
+                            PLAYER_COLOR[playerNum], "Player" + (++playerNum), "192.168.0." + playerNum);
+                    playerItems.add(player);
+                    playerListAdapter.notifyDataSetChanged();
+                }
                 if(playerItems.size() == 4) {
                     startButton.setVisibility(View.VISIBLE);
                 }

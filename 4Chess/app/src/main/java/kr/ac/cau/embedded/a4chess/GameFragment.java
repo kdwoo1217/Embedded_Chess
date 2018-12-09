@@ -7,6 +7,8 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
 import kr.ac.cau.embedded.a4chess.chess.Game;
@@ -22,6 +24,8 @@ import kr.ac.cau.embedded.a4chess.chess.Player;
 public class GameFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     private TextView gameStatusView;
+    private static Button queenSideCastlingButton;
+    private static Button kingSideCastlingButton;
 
     public GameFragment() {
         // Required empty public constructor
@@ -60,6 +64,20 @@ public class GameFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_game, container, false);
         gameStatusView = (TextView) view.findViewById(R.id.game_status);
+        queenSideCastlingButton = (Button) view.findViewById(R.id.queen_castling_button);
+        queenSideCastlingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO QUUEN SIDE CASTLING
+            }
+        });
+        kingSideCastlingButton = (Button) view.findViewById(R.id.king_castling_button);
+        kingSideCastlingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO KING SIDE CASTLING
+            }
+        });
 
         updateTurn();
 
@@ -85,5 +103,23 @@ public class GameFragment extends Fragment {
         }
         stringBuilder.delete(stringBuilder.lastIndexOf("<br />"), stringBuilder.length());
         gameStatusView.setText(Html.fromHtml(stringBuilder.toString()));
+    }
+
+    // King Castling Button Change Visibility
+    public static void changeVisibleKingSideCastling() {
+        if(kingSideCastlingButton.getVisibility() == View.INVISIBLE) {
+            kingSideCastlingButton.setVisibility(View.VISIBLE);
+        } else if(kingSideCastlingButton.getVisibility() == View.VISIBLE) {
+            kingSideCastlingButton.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    // Queen Castling Button Change Visibility
+    public static void changeVisibleQueenSideCastling() {
+        if(queenSideCastlingButton.getVisibility() == View.INVISIBLE) {
+            queenSideCastlingButton.setVisibility(View.VISIBLE);
+        } else if(queenSideCastlingButton.getVisibility() == View.VISIBLE) {
+            queenSideCastlingButton.setVisibility(View.INVISIBLE);
+        }
     }
 }
