@@ -5,17 +5,10 @@ import java.util.TimerTask;
 
 public class BuzzerAlarm {
 
-    int time;
-    TimerTask task;
-
-    public BuzzerAlarm(int time){
-        this.time = time;
-    }
-
-    public void run() {
+    static public void run() {
         Timer timer = new Timer();
 
-        task = new TimerTask(){
+        TimerTask task = new TimerTask(){
             @Override
             public void run()
             {

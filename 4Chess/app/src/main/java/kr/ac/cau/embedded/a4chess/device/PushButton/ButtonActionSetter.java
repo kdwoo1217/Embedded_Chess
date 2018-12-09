@@ -27,5 +27,7 @@ public class ButtonActionSetter {
         pushButtonAction.setButtonAction(6, new Button7Action());
         pushButtonAction.setButtonAction(7, new Button8Action());
         pushButtonAction.setButtonAction(8, new Button9Action());
+
+        pushButtonAction.run();
     }
 }

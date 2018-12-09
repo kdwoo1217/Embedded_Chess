@@ -12,13 +12,13 @@ public class MotorRun {
             @Override
             public void run()
             {
-                DeviceController.MotorWrite(1);
+                DeviceController.MotorWrite(0);
                 try {
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                DeviceController.MotorWrite(0);
+                DeviceController.MotorWrite(768);
             }
         };
 
