@@ -37,30 +37,66 @@ public class MainActivity extends AppCompatActivity {
     // server setting
     private ServerSocket serverSocket;
     private Socket socket;
-    private String msg;
-    private StringBuilder serverMsg = new StringBuilder();
-    private StringBuilder clientMsgBuilder = new StringBuilder();
+    private int player_num;
+    public static String msg;
+    public static StringBuilder serverMsg = new StringBuilder();
+    public static StringBuilder clientMsgBuilder = new StringBuilder();
     public static Map<String, DataOutputStream> clientsMap = new HashMap<String, DataOutputStream>();
 
     // client setting
     private Socket clientSocket;
     private DataInputStream clientIn;
-    private DataOutputStream clientOut;
-    private String clientMsg;
-    private String nickName;
+    public static DataOutputStream clientOut;
+    public static String clientMsg;
+    public static String nickName;
+
+    public void clientSend() {
+        String msg = nickName + " : " + "test!\n"; //transClientText.getText() + "\n";
+//        clientMsgBuilder.append(msg);
+//        clientText.setText(clientMsgBuilder.toString());
+        try {
+            clientOut.writeUTF(msg);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void serverSend() {
+        String msg = "Player1 : " + clientsMap.size() + " test!\n"; //transServerText.getText().toString() + "\n";
+        serverMsg.append(msg);
+        sendMessage(msg);
+    }
 
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msgg) {
             super.handleMessage(msgg);
             switch (msgg.what) {
-                case SERVER_TEXT_UPDATE: {
+                case SERVER_TEXT_UPDATE: { // server (Player1) Update Handler
                     serverMsg.append(msg);
-                    // serverText.setText(serverMsg.toString()); // 메세지 갱신
+                    ///////////////// Refresh Part /////////////////
+                    RoomFragment.test_update_display(serverMsg.toString());
+                    // serverText.setText(serverMsg.toString());
                 }
                 break;
-                case CLIENT_TEXT_UPDATE: {
-                    clientMsgBuilder.append(clientMsg);
+                case CLIENT_TEXT_UPDATE: { // client (Player234) Update Handler
+                    if (clientMsg.charAt(clientMsg.lastIndexOf('(') + 6) == 'c') { // client name (TAG : (info_client)) // 파싱방식 수정 필요
+                        if (nickName == "client") {
+                            nickName = "Player" + Character.toString(clientMsg.charAt(clientMsg.lastIndexOf('(') - 1));
+                        }
+                    }
+                    else if (clientMsg.charAt(clientMsg.lastIndexOf('(') + 6) == 'g') { // game status (TAG : (info_game))
+                        // TODO board update
+                    }
+                    else if (clientMsg.charAt(clientMsg.lastIndexOf('(') + 6) == 'm') { // chat status (TAG : (info_mesg))
+                        // TODO chat update
+                    }
+                    else if (clientMsg.charAt(clientMsg.lastIndexOf('(') + 6) == '-') { // other status (Add by needs)
+                        // TODO
+                    }
+                    clientMsgBuilder.append(clientMsg); // MSG LOG DISPLAY (TEST)
+                    ///////////////// Refresh Part /////////////////
+                    RoomFragment.test_update_display(clientMsgBuilder.toString());
                     // clientText.setText(clientMsgBuilder.toString()); // 메세지 갱신
                 }
                 break;
@@ -107,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void serverCreate() {
         Collections.synchronizedMap(clientsMap);
+        nickName = "Player1";
         try {
             serverSocket = new ServerSocket(port);
             new Thread(new Runnable() {
@@ -114,28 +151,35 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
                     while (true) {
                         /** XXX 01. 첫번째. 서버가 할일 분담. 계속 접속받는것. */
-                        Log.v("", "서버 대기중...");
+                        Log.v("", "waiting...");
                         try {
                             socket = serverSocket.accept();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        Log.v("", socket.getInetAddress() + "에서 접속했습니다.");
-                        msg = socket.getInetAddress() + "에서 접속했습니다.\n";
+                        Log.v("", socket.getInetAddress() + " in.");
+                        msg = socket.getInetAddress() + " in.\n";
+                        msg += Integer.toString(clientsMap.size());
+                        msg += "players";
+                        player_num = clientsMap.size() + 2;
                         handler.sendEmptyMessage(SERVER_TEXT_UPDATE);
 
                         new Thread(new Runnable() {
                             private DataInputStream in;
                             private DataOutputStream out;
                             private String nick;
+                            private String p_num;
 
                             @Override
                             public void run() {
                                 try { // setting
                                     out = new DataOutputStream(socket.getOutputStream());
                                     in = new DataInputStream(socket.getInputStream());
-                                    nick = in.readUTF();
+                                    nick = "Player" + Integer.toString(player_num);
                                     addClient(nick, out);
+                                    //player_num = clientsMap.size() + 1;
+                                    p_num = Integer.toString(player_num);
+                                    sendMessage(p_num + "(info_client)");
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -183,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void joinServer(final String ipAddress) {
         if(nickName==null){
-            nickName="device_1";
+            nickName="client";
         }
         new Thread(new Runnable() {
             @Override

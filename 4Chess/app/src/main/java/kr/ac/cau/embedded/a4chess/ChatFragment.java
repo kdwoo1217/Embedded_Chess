@@ -1,19 +1,24 @@
 package kr.ac.cau.embedded.a4chess;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import kr.ac.cau.embedded.a4chess.Chat.ChatMessage;
 import kr.ac.cau.embedded.a4chess.Chat.MessageAdapter;
+import kr.ac.cau.embedded.a4chess.device.DeviceController;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,6 +36,8 @@ public class ChatFragment extends Fragment {
 
     private List<ChatMessage> chatMessages;
     private ArrayAdapter<ChatMessage> adapter;
+
+    private String message;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -62,8 +69,6 @@ public class ChatFragment extends Fragment {
 
         chatMessages = new ArrayList<>();
 
-        btnSend = (Button) view.findViewById(R.id.send_btn);
-        btnReceive = (Button) view.findViewById(R.id.receive_btn);
 
         listView = (ListView) view.findViewById(R.id.chat_list);
 
@@ -71,26 +76,86 @@ public class ChatFragment extends Fragment {
 
         listView.setAdapter(adapter);
 
-        btnSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ChatMessage chatMessage = new ChatMessage("player1", true);
-                chatMessages.add(chatMessage);
-                adapter.notifyDataSetChanged();
-                //listView.invalidate();
-            }
-        });
 
-        btnReceive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ChatMessage chatMessage = new ChatMessage("player2", false);
-                chatMessages.add(chatMessage);
-                adapter.notifyDataSetChanged();
-                //listView.invalidate();
+        //original = DeviceController.PushbuttonRead();
+
+
+
+        new Thread(new Runnable() { @Override public void run() {
+            while(true){
+                try{
+                    int clicked_button = DeviceController.PushbuttonRead();
+
+                    sendMessage(clicked_button);
+
+                    Thread.sleep(200);
+                }
+                catch (Exception e){
+
+                }
             }
-        });
+        }
+        }).start();
 
         return view;
     }
+
+    private void sendMessage(int macro){
+
+        if(macro == 0){
+            return ;
+        }
+
+        message = new String("");
+        if(macro == 1){
+            message = getResources().getString(R.string.macro1);
+            message = message.substring(2,message.length());
+        }
+        else if(macro == 10){
+            message = getResources().getString(R.string.macro2);
+            message = message.substring(2,message.length());
+        }
+        else if(macro == 100){
+            message = getResources().getString(R.string.macro3);
+            message = message.substring(2,message.length());
+        }
+        else if(macro == 1000){
+            message = getResources().getString(R.string.macro4);
+            message = message.substring(2,message.length());
+        }
+        else if(macro == 10000){
+            message = getResources().getString(R.string.macro5);
+            message = message.substring(2,message.length());
+        }
+        else if(macro == 100000){
+            message = getResources().getString(R.string.macro6);
+            message = message.substring(2,message.length());
+        }
+        else if(macro == 1000000){
+            message = getResources().getString(R.string.macro7);
+            message = message.substring(2,message.length());
+        }
+        else if(macro == 10000000){
+            message = getResources().getString(R.string.macro8);
+            message = message.substring(2,message.length());
+        }
+        else if(macro == 100000000){
+            message = getResources().getString(R.string.macro9);
+            message = message.substring(2,message.length());
+        }
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ChatMessage chatMessage = new ChatMessage("player1 : " + message, true);
+                chatMessages.add(chatMessage);
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+    }
 }
+
+
+
+
