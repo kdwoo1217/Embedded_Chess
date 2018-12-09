@@ -2,9 +2,17 @@ package kr.ac.cau.embedded.a4chess;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Layout;
+import android.util.AttributeSet;
+import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.HorizontalScrollView;
+import android.widget.ScrollView;
+
+import org.xmlpull.v1.XmlPullParser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -43,6 +51,8 @@ public class ChessFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chess, container, false);
+        View view =  inflater.inflate(R.layout.fragment_chess, container, false);
+
+        return view;
     }
 }
