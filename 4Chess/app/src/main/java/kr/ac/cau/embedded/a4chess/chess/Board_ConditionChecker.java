@@ -6,6 +6,7 @@ import android.util.Log;
 
 import kr.ac.cau.embedded.a4chess.chess.pieces.Piece;
 import kr.ac.cau.embedded.a4chess.chess.pieces.King;
+import kr.ac.cau.embedded.a4chess.chess.pieces.Rook;
 
 public class Board_ConditionChecker {
 
@@ -106,6 +107,84 @@ public class Board_ConditionChecker {
         }
 
         return isCheckMated;
+    }
+
+    public boolean isQueenSideCastlingAvailable(String PlayerId){
+
+        if(isPlyaerChecked(PlayerId))
+            return false;
+
+        int playerPos = 0;
+
+        boolean isRightKing = true;
+
+        for(int i = 0; i < Game.players.length; i++) {
+            if(PlayerId == Game.players[i].id){
+                playerPos = i;
+            }
+        }
+
+        if(playerPos == 1 || playerPos == 2)
+            isRightKing = false;
+
+        if(isRightKing){
+            if(Board.getPiece(new Coordinate(3, 0)) instanceof Rook
+                    && Board.getPiece(new Coordinate(4, 0)) == null
+                    && Board.getPiece(new Coordinate(5, 0)) == null
+                    && Board.getPiece(new Coordinate(6, 0)) == null
+                    && Board.getPiece(new Coordinate(7, 0)) instanceof King) {
+                return true;
+            }
+        }
+        else{
+            if(Board.getPiece(new Coordinate(10, 0)) instanceof Rook
+                    && Board.getPiece(new Coordinate(9, 0)) == null
+                    && Board.getPiece(new Coordinate(8, 0)) == null
+                    && Board.getPiece(new Coordinate(7, 0)) == null
+                    && Board.getPiece(new Coordinate(6, 0)) instanceof King) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isKingSideCastlingAvaliable(String PlayerId){
+
+        if(isPlyaerChecked(PlayerId))
+            return false;
+
+        int playerPos = 0;
+
+        boolean isRightKing = true;
+
+        for(int i = 0; i < Game.players.length; i++) {
+            if(PlayerId == Game.players[i].id){
+                playerPos = i;
+            }
+        }
+
+        if(playerPos == 1 || playerPos == 2)
+            isRightKing = false;
+
+        if(isRightKing){
+            if(Board.getPiece(new Coordinate(10, 0)) instanceof Rook
+                    && Board.getPiece(new Coordinate(9, 0)) == null
+                    && Board.getPiece(new Coordinate(8, 0)) == null
+                    && Board.getPiece(new Coordinate(7, 0)) instanceof King) {
+                return true;
+            }
+        }
+        else{
+            if(Board.getPiece(new Coordinate(3, 0)) instanceof Rook
+                    && Board.getPiece(new Coordinate(4, 0)) == null
+                    && Board.getPiece(new Coordinate(5, 0)) == null
+                    && Board.getPiece(new Coordinate(6, 0)) instanceof King) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static Piece getKingCoordinate(String PlayerId){
