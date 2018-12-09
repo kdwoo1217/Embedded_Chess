@@ -20,7 +20,7 @@ Java_kr_ac_cau_embedded_a4chess_device_DeviceController_LcdWrite(JNIEnv* jenv, j
     int dev, pos;
 
     const char* cStringLine1 = (*jenv)->GetStringUTFChars(jenv ,line1, NULL);
-    const char* cStringLine2 = (*jenv)->GetStringUTFChars(jenv ,line1, NULL);
+    const char* cStringLine2 = (*jenv)->GetStringUTFChars(jenv ,line2, NULL);
 
     if((dev = open("/dev/lcd", O_WRONLY | O_SYNC)) < 0) {
 //        __android_log_print(ANDROID_LOG_ERROR, "Lcd", "failed to open /dev/lcd\n");
