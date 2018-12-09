@@ -22,9 +22,9 @@ import kr.ac.cau.embedded.a4chess.chess.Match;
 public class RoomFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
 
-    private TextView tvName;
-    private TextView tvIp;
-    private TextView tvTest;
+    public static TextView tvName;
+    public static TextView tvIp;
+    public static TextView tvTest;
 
     public RoomFragment() {
         // Required empty public constructor
@@ -82,5 +82,8 @@ public class RoomFragment extends Fragment {
         });
 
         return view;
+    }
+    public static void test_update_display(String s) {
+        tvTest.setText(s);
     }
 }
