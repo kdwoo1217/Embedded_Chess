@@ -24,6 +24,7 @@ public class RoomFragment extends Fragment {
 
     private TextView tvName;
     private TextView tvIp;
+    private TextView tvTest;
 
     public RoomFragment() {
         // Required empty public constructor
@@ -55,17 +56,22 @@ public class RoomFragment extends Fragment {
 
         tvName = (TextView)view.findViewById(R.id.tv_name);
         tvIp = (TextView)view.findViewById(R.id.tv_ip);
+        tvTest = (TextView)view.findViewById(R.id.tv_test);
         tvName.setText(((MainActivity) getActivity()).info_name);
         tvIp.setText(((MainActivity) getActivity()).info_ip);
 
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (((MainActivity) getActivity()).clientsMap.isEmpty()) {
-                    tvName.setText("Not Connected : ");
+                if (((MainActivity) getActivity()).info_name == "My IP : ") { // server msg test
+                    // tvName.setText("Not Connected : ");
+                    ((MainActivity) getActivity()).serverSend();
+                    tvTest.setText(((MainActivity) getActivity()).serverMsg.toString());
                 }
-                else {
-                    tvName.setText("Connected : ");
+                else { // client msg test
+                    // tvName.setText("Connected : ");
+                    ((MainActivity) getActivity()).clientSend();
+                    tvTest.setText(((MainActivity) getActivity()).clientMsgBuilder.toString());
                 }
                 /*
                 Match match = new Match(String.valueOf(System.currentTimeMillis()));

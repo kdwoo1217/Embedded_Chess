@@ -37,17 +37,35 @@ public class MainActivity extends AppCompatActivity {
     // server setting
     private ServerSocket serverSocket;
     private Socket socket;
-    private String msg;
-    private StringBuilder serverMsg = new StringBuilder();
-    private StringBuilder clientMsgBuilder = new StringBuilder();
+    private int player_num;
+    public static String msg;
+    public static StringBuilder serverMsg = new StringBuilder();
+    public static StringBuilder clientMsgBuilder = new StringBuilder();
     public static Map<String, DataOutputStream> clientsMap = new HashMap<String, DataOutputStream>();
 
     // client setting
     private Socket clientSocket;
     private DataInputStream clientIn;
     private DataOutputStream clientOut;
-    private String clientMsg;
+    public static String clientMsg;
     private String nickName;
+
+    public void clientSend() {
+        String msg = nickName + " : " + "test!\n"; //transClientText.getText() + "\n";
+//                clientMsgBuilder.append(msg);
+//                clientText.setText(clientMsgBuilder.toString());
+        try {
+            clientOut.writeUTF(msg);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void serverSend() {
+        String msg = "Server : " + "test!\n"; //transServerText.getText().toString() + "\n";
+        serverMsg.append(msg);
+        sendMessage(msg);
+    }
 
     private Handler handler = new Handler() {
         @Override
@@ -107,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void serverCreate() {
         Collections.synchronizedMap(clientsMap);
+        player_num = 0;
         try {
             serverSocket = new ServerSocket(port);
             new Thread(new Runnable() {
@@ -134,8 +153,10 @@ public class MainActivity extends AppCompatActivity {
                                 try { // setting
                                     out = new DataOutputStream(socket.getOutputStream());
                                     in = new DataInputStream(socket.getInputStream());
-                                    nick = in.readUTF();
+                                    player_num++;
+                                    nick = in.readUTF() + Integer.toString(player_num);
                                     addClient(nick, out);
+                                    sendMessage("info_" + nick);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -183,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void joinServer(final String ipAddress) {
         if(nickName==null){
-            nickName="device_1";
+            nickName="client";
         }
         new Thread(new Runnable() {
             @Override
