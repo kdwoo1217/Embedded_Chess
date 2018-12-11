@@ -21,6 +21,8 @@ public class StartFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     private Button makeRoomButton, enjoyRoomButton;
 
+    Bundle bundle;
+
     public StartFragment() {
         // Required empty public constructor
     }
@@ -53,7 +55,13 @@ public class StartFragment extends Fragment {
         makeRoomButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity) getActivity()).changeRoomFragment();
+                ((MainActivity) getActivity()).info_name = "My IP : ";
+                ((MainActivity) getActivity()).info_ip = ((MainActivity) getActivity()).getTestLocalIpAddress();
+                if(((MainActivity) getActivity()).info_ip != null) {
+                    ((MainActivity) getActivity()).serverCreate();
+                    ((MainActivity) getActivity()).changeRoomFragment();
+                }
+
             }
         });
         enjoyRoomButton.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +76,10 @@ public class StartFragment extends Fragment {
                     public void onDismiss(DialogInterface dialog) {
                         if(((InputDialog)dialog).getInputString() != null) {
                             // TODO Find Room
+                            ((MainActivity) getActivity()).info_name = "Server IP : ";
+                            ((MainActivity) getActivity()).info_ip = ((InputDialog) dialog).getInputString();
+
+                            ((MainActivity) getActivity()).joinServer(((InputDialog) dialog).getInputString());
                             ((MainActivity) getActivity()).changeRoomFragment();
                         } else {
                             dialog.cancel();

@@ -60,7 +60,7 @@ public class RoomFragment extends Fragment {
         super.onCreate(savedInstanceState);
         playerItems = new ArrayList<Player>();
         Player roomMaster = new Player(playerNum.toString(), playerNum / 2,
-                PLAYER_COLOR[playerNum], "Player1", "192.168.0.1");
+                PLAYER_COLOR[playerNum], "Player0", ((MainActivity) getActivity()).info_ip);
         playerItems.add(roomMaster);
         playerNum++;
     }
@@ -83,7 +83,7 @@ public class RoomFragment extends Fragment {
             public void onClick(View v) {
                 if(playerItems.size() < 4) {
                     Player player = new Player(playerNum.toString(), playerNum / 2,
-                            PLAYER_COLOR[playerNum], "Player" + (++playerNum), "192.168.0." + playerNum);
+                            PLAYER_COLOR[playerNum], "Player" + (playerNum++), "192.168.0." + playerNum);
                     playerItems.add(player);
                     playerListAdapter.notifyDataSetChanged();
                 }
@@ -104,5 +104,9 @@ public class RoomFragment extends Fragment {
         startButton.setVisibility(View.GONE);
 
         return view;
+    }
+
+    public static void test_update_display(String s) {
+        //tvTest.setText(s);
     }
 }
