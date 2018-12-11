@@ -3,6 +3,7 @@ package kr.ac.cau.embedded.a4chess.chess;
 import android.util.Log;
 import android.util.Pair;
 
+import kr.ac.cau.embedded.a4chess.GameFragment;
 import kr.ac.cau.embedded.a4chess.chess.pieces.Bishop;
 import kr.ac.cau.embedded.a4chess.chess.pieces.DownPawn;
 import kr.ac.cau.embedded.a4chess.chess.pieces.King;
@@ -187,7 +188,6 @@ public class Board {
         }
 
         if(Board_ConditionChecker.isQueenSideCastlingAvailable(Game.currentPlayer()) == 37) {
-
             Piece rook = Board.getPiece(new Coordinate(3, 0));
             Piece king = Board.getPiece(new Coordinate(7, 0));
 
@@ -202,7 +202,7 @@ public class Board {
         }
 
         else if(Board_ConditionChecker.isQueenSideCastlingAvailable(Game.currentPlayer()) == 106) {
-
+            GameFragment.changeVisibleKingSideCastling();
             Piece rook = Board.getPiece(new Coordinate(10, 0));
             Piece king = Board.getPiece(new Coordinate(6, 0));
 

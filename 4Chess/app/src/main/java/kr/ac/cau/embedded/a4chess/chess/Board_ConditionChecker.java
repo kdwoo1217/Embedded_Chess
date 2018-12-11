@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 import android.util.Log;
 
+import kr.ac.cau.embedded.a4chess.GameFragment;
 import kr.ac.cau.embedded.a4chess.chess.pieces.Piece;
 import kr.ac.cau.embedded.a4chess.chess.pieces.King;
 import kr.ac.cau.embedded.a4chess.chess.pieces.Rook;

@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -19,16 +20,25 @@ public class BoardView extends View {
     private final Paint textPaint = new Paint();
 
     private Coordinate selection;
+    private GestureDetector doubleTapGestureDetector;
+
+    private float scaleFactor = 1.0f;
+    private float focusX = 0;
+    private float focusY = 0;
 
     public BoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        doubleTapGestureDetector = new GestureDetector(context, new DoubleTapListener());
     }
 
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
+        canvas.save();
+        canvas.translate(focusX * -1, focusY * -1);
+//        canvas.scale(scaleFactor, scaleFactor);
         int boardSize = Board.getBoardSize();
-        float cellWidth = canvas.getHeight() / (float) boardSize;
+        float cellWidth = canvas.getHeight() / (float) boardSize * scaleFactor;
         Coordinate coordinate;
         Piece piece;
         textPaint.setTextSize(cellWidth);
@@ -65,14 +75,21 @@ public class BoardView extends View {
                 }
             }
         }
+        canvas.restore();
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        doubleTapGestureDetector.onTouchEvent(event);
+
         if (event.getAction() == MotionEvent.ACTION_UP) {
             int boardSize = Board.getBoardSize();
-            int x = (int) (event.getX() / getHeight() * boardSize);
-            int y = boardSize - 1 - (int) (event.getY() / getHeight() * boardSize);
+            float eventX = event.getX();
+            float eventY = event.getY();
+            eventX = (eventX + focusX) / scaleFactor;
+            eventY = (eventY + focusY) / scaleFactor;
+            int x = (int) (eventX / getHeight() * boardSize);
+            int y = boardSize - 1 - (int) (eventY / getHeight() * boardSize);
             Coordinate coordinate = new Coordinate(x, y);
             if (coordinate.isValid() && Board.getPiece(coordinate) != null &&
                     Board.getPiece(coordinate).getPlayerId().equals(Game.currentPlayer())) {
@@ -90,8 +107,36 @@ public class BoardView extends View {
         return true;
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int height = MeasureSpec.getSize(heightMeasureSpec);
+
+        setMeasuredDimension((int)(width * scaleFactor), (int)(height * scaleFactor));
+    }
+
     private void drawCoordinate(final Coordinate coordinate, final Canvas canvas, final float cellWidth, final Paint paint, int boardSize) {
         canvas.drawRect(coordinate.x * cellWidth, (boardSize - coordinate.y - 1) * cellWidth, (coordinate.x + 1) * cellWidth,
                 (boardSize - coordinate.y) * cellWidth, paint);
+    }
+
+    private class DoubleTapListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            focusX = e.getX();
+            focusY = e.getY();
+
+            if(scaleFactor < 2.0f) {
+                scaleFactor = 2.0f;
+                invalidate();
+            } else {
+                scaleFactor = 1.0f;
+                focusX = 0;
+                focusY = 0;
+                invalidate();
+            }
+
+            return true;
+        }
     }
 }
