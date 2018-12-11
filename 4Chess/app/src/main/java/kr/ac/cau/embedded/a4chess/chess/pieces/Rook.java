@@ -7,6 +7,7 @@ import kr.ac.cau.embedded.a4chess.chess.Board;
 import kr.ac.cau.embedded.a4chess.chess.Coordinate;
 
 public class Rook extends Piece {
+
     public Rook(Coordinate coordinate, String id) {
         super(coordinate, id);
     }

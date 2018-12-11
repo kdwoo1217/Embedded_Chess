@@ -109,10 +109,10 @@ public class Board_ConditionChecker {
         return isCheckMated;
     }
 
-    public boolean isQueenSideCastlingAvailable(String PlayerId){
+   static public int isQueenSideCastlingAvailable(String PlayerId){
 
         if(isPlyaerChecked(PlayerId))
-            return false;
+            return 0;
 
         int playerPos = 0;
 
@@ -129,30 +129,34 @@ public class Board_ConditionChecker {
 
         if(isRightKing){
             if(Board.getPiece(new Coordinate(3, 0)) instanceof Rook
+                    && !Board.getPiece(new Coordinate(3, 0)).isMovedOnce
                     && Board.getPiece(new Coordinate(4, 0)) == null
                     && Board.getPiece(new Coordinate(5, 0)) == null
                     && Board.getPiece(new Coordinate(6, 0)) == null
-                    && Board.getPiece(new Coordinate(7, 0)) instanceof King) {
-                return true;
+                    && Board.getPiece(new Coordinate(7, 0)) instanceof King
+                    && !Board.getPiece(new Coordinate(7, 0)).isMovedOnce) {
+                return 37;
             }
         }
         else{
             if(Board.getPiece(new Coordinate(10, 0)) instanceof Rook
+                    && !Board.getPiece(new Coordinate(10, 0)).isMovedOnce
                     && Board.getPiece(new Coordinate(9, 0)) == null
                     && Board.getPiece(new Coordinate(8, 0)) == null
                     && Board.getPiece(new Coordinate(7, 0)) == null
-                    && Board.getPiece(new Coordinate(6, 0)) instanceof King) {
-                return true;
+                    && Board.getPiece(new Coordinate(6, 0)) instanceof King
+                    && !Board.getPiece(new Coordinate(6, 0)).isMovedOnce) {
+                return 106;
             }
         }
 
-        return false;
+        return 0;
     }
 
-    public boolean isKingSideCastlingAvaliable(String PlayerId){
+    static public int isKingSideCastlingAvailable(String PlayerId){
 
         if(isPlyaerChecked(PlayerId))
-            return false;
+            return 0;
 
         int playerPos = 0;
 
@@ -169,22 +173,26 @@ public class Board_ConditionChecker {
 
         if(isRightKing){
             if(Board.getPiece(new Coordinate(10, 0)) instanceof Rook
+                    && !Board.getPiece(new Coordinate(10, 0)).isMovedOnce
                     && Board.getPiece(new Coordinate(9, 0)) == null
                     && Board.getPiece(new Coordinate(8, 0)) == null
-                    && Board.getPiece(new Coordinate(7, 0)) instanceof King) {
-                return true;
+                    && Board.getPiece(new Coordinate(7, 0)) instanceof King
+                    && !Board.getPiece(new Coordinate(7, 0)).isMovedOnce) {
+                return 107;
             }
         }
         else{
             if(Board.getPiece(new Coordinate(3, 0)) instanceof Rook
+                    && !Board.getPiece(new Coordinate(3, 0)).isMovedOnce
                     && Board.getPiece(new Coordinate(4, 0)) == null
                     && Board.getPiece(new Coordinate(5, 0)) == null
-                    && Board.getPiece(new Coordinate(6, 0)) instanceof King) {
-                return true;
+                    && Board.getPiece(new Coordinate(6, 0)) instanceof King
+                    && !Board.getPiece(new Coordinate(6, 0)).isMovedOnce) {
+                return 36;
             }
         }
 
-        return false;
+        return 0;
     }
 
     private static Piece getKingCoordinate(String PlayerId){

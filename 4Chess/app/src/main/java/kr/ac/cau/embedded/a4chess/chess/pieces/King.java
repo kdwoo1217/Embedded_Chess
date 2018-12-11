@@ -6,6 +6,7 @@ import java.util.List;
 import kr.ac.cau.embedded.a4chess.chess.Coordinate;
 
 public class King extends Piece {
+
     public King(Coordinate coordinate, String id) {
         super(coordinate, id);
     }

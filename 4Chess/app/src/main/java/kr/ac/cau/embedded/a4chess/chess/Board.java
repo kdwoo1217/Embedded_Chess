@@ -13,6 +13,7 @@ import kr.ac.cau.embedded.a4chess.chess.pieces.Piece;
 import kr.ac.cau.embedded.a4chess.chess.pieces.Queen;
 import kr.ac.cau.embedded.a4chess.chess.pieces.RightPawn;
 import kr.ac.cau.embedded.a4chess.chess.pieces.Rook;
+import kr.ac.cau.embedded.a4chess.device.LcdPrintTurn;
 
 public class Board {
     private static Piece[][] BoardState;
@@ -54,6 +55,8 @@ public class Board {
 
         // setup player 4 (left)
         setupPlayerLeftRight(1, 0, players[3].id);
+
+        LcdPrintTurn.write();
     }
 
     private static void setupPlayerTopBottom(int xStart, int yStart, int yEnd, final String playerId) {
@@ -111,6 +114,7 @@ public class Board {
         BoardState[newPosition.x][newPosition.y] = BoardState[oldPosition.x][oldPosition.y];
         BoardState[oldPosition.x][oldPosition.y] = null;
         piece.position = newPosition;
+        piece.isMovedOnce = true;
 
         Game.getPlayer(Game.currentPlayer()).lastMove =
                 new Pair<Coordinate, Coordinate>(oldPosition, newPosition);
@@ -120,6 +124,96 @@ public class Board {
             Game.over();
         } else {
             Game.moved();
+        }
+
+        for(Player elem : Game.players)
+        {
+            Log.d("CHECK", "Player " + elem.id +  " is under " + Board_ConditionChecker.checkPlayerCondition(elem.id));
+        }
+
+        LcdPrintTurn.write();
+
+        return true;
+    }
+
+    public static boolean kingSideCastling() {
+
+        if (!Game.myTurn()) {
+            return false;
+        }
+
+        if(Board_ConditionChecker.isKingSideCastlingAvailable(Game.currentPlayer()) == 36) {
+
+            Piece rook = Board.getPiece(new Coordinate(3, 0));
+            Piece king = Board.getPiece(new Coordinate(6, 0));
+
+            BoardState[4][0] = king;
+            BoardState[5][0] = rook;
+
+            rook.position = new Coordinate(5, 0);
+            king.position = new Coordinate(4, 0);
+
+            Game.moved();
+            LcdPrintTurn.write();
+        }
+
+        else if(Board_ConditionChecker.isKingSideCastlingAvailable(Game.currentPlayer()) == 107) {
+
+            Piece rook = Board.getPiece(new Coordinate(10, 0));
+            Piece king = Board.getPiece(new Coordinate(7, 0));
+
+            BoardState[9][0] = king;
+            BoardState[8][0] = rook;
+
+            rook.position = new Coordinate(8, 0);
+            king.position = new Coordinate(9, 0);
+
+            Game.moved();
+            LcdPrintTurn.write();
+        }
+
+        for(Player elem : Game.players)
+        {
+            Log.d("CHECK", "Player " + elem.id +  " is under " + Board_ConditionChecker.checkPlayerCondition(elem.id));
+        }
+
+        return true;
+    }
+
+    public static boolean queenSideCastling() {
+
+        if (!Game.myTurn()) {
+            return false;
+        }
+
+        if(Board_ConditionChecker.isQueenSideCastlingAvailable(Game.currentPlayer()) == 37) {
+
+            Piece rook = Board.getPiece(new Coordinate(3, 0));
+            Piece king = Board.getPiece(new Coordinate(7, 0));
+
+            BoardState[5][0] = king;
+            BoardState[6][0] = rook;
+
+            rook.position = new Coordinate(6, 0);
+            king.position = new Coordinate(5, 0);
+
+            Game.moved();
+            LcdPrintTurn.write();
+        }
+
+        else if(Board_ConditionChecker.isQueenSideCastlingAvailable(Game.currentPlayer()) == 106) {
+
+            Piece rook = Board.getPiece(new Coordinate(10, 0));
+            Piece king = Board.getPiece(new Coordinate(6, 0));
+
+            BoardState[8][0] = king;
+            BoardState[7][0] = rook;
+
+            rook.position = new Coordinate(7, 0);
+            king.position = new Coordinate(8, 0);
+
+            Game.moved();
+            LcdPrintTurn.write();
         }
 
         for(Player elem : Game.players)

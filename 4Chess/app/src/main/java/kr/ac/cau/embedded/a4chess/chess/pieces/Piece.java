@@ -8,6 +8,8 @@ import kr.ac.cau.embedded.a4chess.chess.Game;
 
 public abstract class Piece {
 
+    public boolean isMovedOnce = false;
+
     public Coordinate position;
     public abstract List<Coordinate> getPossiblePositions();
 
