@@ -16,8 +16,6 @@ import kr.ac.cau.embedded.a4chess.chess.pieces.Piece;
 
 public class BoardView extends View {
 
-    public static BoardView view;
-
     private final Paint boardPaint = new Paint();
     private final Paint textPaint = new Paint();
 
@@ -27,11 +25,11 @@ public class BoardView extends View {
     private float scaleFactor = 1.0f;
     private float focusX = 0;
     private float focusY = 0;
+    private int procNum = 0; // Procedure Number - avoid duplication & may check whose turn now
 
     public BoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
         doubleTapGestureDetector = new GestureDetector(context, new DoubleTapListener());
-        view = this;
     }
 
     @Override
@@ -82,7 +80,7 @@ public class BoardView extends View {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(MotionEvent event) { //★★ TODO : should be called when "(info_game)" received
         doubleTapGestureDetector.onTouchEvent(event);
 
         if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -100,7 +98,17 @@ public class BoardView extends View {
                 invalidate();
             } else {
                 if (selection != null) { // we have a piece selected and clicked on a new position
-                    if (Board.move(selection, coordinate)) {
+                    if (Board.move(selection, coordinate)) { // gameMsg ex : "1 0 0 2 3(info_game)"
+                        procNum++;
+                        String gameMsg = Integer.toString(procNum) + "#";
+                        gameMsg += Integer.toString(selection.x) + "#" + Integer.toString(selection.y) + "#";
+                        gameMsg += Integer.toString(coordinate.x) + "#" + Integer.toString(coordinate.y) + "(info_game)";
+                        if (MainActivity.nickName == "Player1") {
+                            MainActivity.serverSend(gameMsg);
+                        }
+                        else {
+                            MainActivity.clientSend(gameMsg);
+                        }
                         selection = null;
                         invalidate();
                     }
