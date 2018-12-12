@@ -196,6 +196,63 @@ public class Board_ConditionChecker {
         return 0;
     }
 
+    public static Coordinate[] getKingSideCastlingCoordinatePair(String PlayerId) {
+        Coordinate [] result = new Coordinate[4];
+
+        int a = new Integer(PlayerId);
+        a = 1-a%2;
+
+        Coordinate KingCoord = Board_ConditionChecker.getKingCoordinate(PlayerId).position;
+        int x = KingCoord.x;
+        int y = KingCoord.y;
+
+        if(Board.getPiece(new Coordinate(x, y)) instanceof King
+                && !Board.getPiece(new Coordinate(x, y)).isMovedOnce
+                && Board.getPiece(new Coordinate(x+(1*(a)), y-(1*(1-a)))) == null
+                && Board.getPiece(new Coordinate(x+(2*(a)), y-(2*(1-a)))) == null
+                && Board.getPiece(new Coordinate(x+(3*(a)), y-(3*(1-a)))) instanceof Rook
+                && !Board.getPiece(new Coordinate(x+(3*(a)), y-(3*(1-a)))).isMovedOnce) {
+
+            result[0] = new Coordinate(x, y);
+            result[1] = new Coordinate(x+(3*(a)), y-(3*(1-a)));
+            result[2] = new Coordinate(x+(2*(a)), y-(2*(1-a)));
+            result[3] = new Coordinate(x+(1*(a)), y-(1*(1-a)));
+
+            return result;
+        }
+
+        return null;
+    }
+
+    public static Coordinate[] getQueenSideCastlingCoordinatePair(String PlayerId) {
+        Coordinate [] result = new Coordinate[4];
+
+        int a = new Integer(PlayerId);
+        a = 1-a%2;
+
+        Coordinate KingCoord = Board_ConditionChecker.getKingCoordinate(PlayerId).position;
+        int x = KingCoord.x;
+        int y = KingCoord.y;
+
+        if(Board.getPiece(new Coordinate(x, y)) instanceof King
+                && !Board.getPiece(new Coordinate(x, y)).isMovedOnce
+                && Board.getPiece(new Coordinate(x-(1*(a)), y+(1*(1-a)))) == null
+                && Board.getPiece(new Coordinate(x-(2*(a)), y+(2*(1-a)))) == null
+                && Board.getPiece(new Coordinate(x-(3*(a)), y+(3*(1-a)))) == null
+                && Board.getPiece(new Coordinate(x-(4*(a)), y+(4*(1-a)))) instanceof Rook
+                && !Board.getPiece(new Coordinate(x-(4*(a)), y+(4*(1-a)))).isMovedOnce) {
+
+            result[0] = new Coordinate(x, y);
+            result[1] = new Coordinate(x-(4*(a)), y+(4*(1-a)));
+            result[2] = new Coordinate(x-(2*(a)), y+(2*(1-a)));
+            result[3] = new Coordinate(x-(1*(a)), y+(1*(1-a)));
+
+            return result;
+        }
+
+        return null;
+    }
+
     private static Piece getKingCoordinate(String PlayerId){
         //get Player's current king coordinate
         for(int i = 0 ; i < Board.getBoardSize(); i ++) {

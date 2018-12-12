@@ -12,6 +12,7 @@ public class Game {
     public static Match match;
     public static Player[] players;
     public static int turns;
+    public static String myPlayerId;
 
     public static GameFragment UI;
 
@@ -90,8 +91,16 @@ public class Game {
     }
 
     public static boolean myTurn() {
-//        return match.isLocal || myPlayerId.equals(players[turns % players.length].id);
+        //return match.isLocal || myPlayerId.equals(players[turns % players.length].id);
         return true;
+    }
+
+    public static boolean isValidTurn(String PlayerId) {
+//        if(PlayerId.equals(Game.currentPlayer())) { // local test
+        if(PlayerId.equals(Game.currentPlayer())) { // in Network
+            return true;
+        }
+        return false;
     }
 
     public static boolean sameTeam(final String id1, final String id2) {

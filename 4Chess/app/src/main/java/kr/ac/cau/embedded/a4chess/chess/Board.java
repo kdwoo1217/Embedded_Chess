@@ -93,8 +93,11 @@ public class Board {
         BoardState[xEnd][10] = new Rook(new Coordinate(xEnd, 10), playerId);
     }
 
-    public static boolean move(final Coordinate oldPosition, final Coordinate newPosition) {
-        if (!Game.myTurn()) {
+    public static boolean move(String PlayerId, final Coordinate oldPosition, final Coordinate newPosition) {
+//        if (!Game.myTurn()) {
+//            return false;
+//        }
+        if(!Game.isValidTurn(PlayerId)){
             return false;
         }
 
@@ -139,43 +142,28 @@ public class Board {
         return true;
     }
 
-    public static boolean kingSideCastling() {
+    public static boolean kingSideCastling(String PlayerId) {
 
-        if (!Game.myTurn()) {
+        if(Game.isValidTurn(PlayerId)){
             return false;
         }
-
-        if(Board_ConditionChecker.isKingSideCastlingAvailable(Game.currentPlayer()) == 36) {
-
-            Piece rook = Board.getPiece(new Coordinate(3, 0));
-            Piece king = Board.getPiece(new Coordinate(6, 0));
-
-            BoardState[4][0] = king;
-            BoardState[5][0] = rook;
-
-            BoardState[3][0] = null;
-            BoardState[6][0] = null;
-
-            rook.position = new Coordinate(5, 0);
-            king.position = new Coordinate(4, 0);
-
-            Game.moved();
-            LcdPrintTurn.write();
+        if(Board_ConditionChecker.getKingSideCastlingCoordinatePair(PlayerId) == null){
+            return false;
         }
+        else{
+            Coordinate coord[] = Board_ConditionChecker.getKingSideCastlingCoordinatePair(PlayerId);
 
-        else if(Board_ConditionChecker.isKingSideCastlingAvailable(Game.currentPlayer()) == 107) {
+            Piece king = Board.getPiece(coord[0]);
+            Piece rook = Board.getPiece(coord[1]);
 
-            Piece rook = Board.getPiece(new Coordinate(10, 0));
-            Piece king = Board.getPiece(new Coordinate(7, 0));
+            BoardState[coord[2].x][coord[2].y] = king;
+            BoardState[coord[3].x][coord[3].y] = rook;
 
-            BoardState[9][0] = king;
-            BoardState[8][0] = rook;
+            BoardState[coord[0].x][coord[0].y] = null;
+            BoardState[coord[1].x][coord[1].y] = null;
 
-            BoardState[10][0] = null;
-            BoardState[7][0] = null;
-
-            rook.position = new Coordinate(8, 0);
-            king.position = new Coordinate(9, 0);
+            king.position = coord[2];
+            rook.position = coord[3];
 
             Game.moved();
             LcdPrintTurn.write();
@@ -189,42 +177,28 @@ public class Board {
         return true;
     }
 
-    public static boolean queenSideCastling() {
+    public static boolean queenSideCastling(String PlayerId) {
 
-        if (!Game.myTurn()) {
+        if(Game.isValidTurn(PlayerId)){
             return false;
         }
-
-        if(Board_ConditionChecker.isQueenSideCastlingAvailable(Game.currentPlayer()) == 37) {
-            Piece rook = Board.getPiece(new Coordinate(3, 0));
-            Piece king = Board.getPiece(new Coordinate(7, 0));
-
-            BoardState[5][0] = king;
-            BoardState[6][0] = rook;
-
-            BoardState[3][0] = null;
-            BoardState[7][0] = null;
-
-            rook.position = new Coordinate(6, 0);
-            king.position = new Coordinate(5, 0);
-
-            Game.moved();
-            LcdPrintTurn.write();
+        if(Board_ConditionChecker.getQueenSideCastlingCoordinatePair(PlayerId) == null){
+            return false;
         }
+        else{
+            Coordinate coord[] = Board_ConditionChecker.getQueenSideCastlingCoordinatePair(PlayerId);
 
-        else if(Board_ConditionChecker.isQueenSideCastlingAvailable(Game.currentPlayer()) == 106) {
-            GameFragment.changeVisibleKingSideCastling();
-            Piece rook = Board.getPiece(new Coordinate(10, 0));
-            Piece king = Board.getPiece(new Coordinate(6, 0));
+            Piece king = Board.getPiece(coord[0]);
+            Piece rook = Board.getPiece(coord[1]);
 
-            BoardState[8][0] = king;
-            BoardState[7][0] = rook;
+            BoardState[coord[2].x][coord[2].y] = king;
+            BoardState[coord[3].x][coord[3].y] = rook;
 
-            BoardState[10][0] = null;
-            BoardState[6][0] = null;
+            BoardState[coord[0].x][coord[0].y] = null;
+            BoardState[coord[1].x][coord[1].y] = null;
 
-            rook.position = new Coordinate(7, 0);
-            king.position = new Coordinate(8, 0);
+            king.position = coord[2];
+            rook.position = coord[3];
 
             Game.moved();
             LcdPrintTurn.write();
