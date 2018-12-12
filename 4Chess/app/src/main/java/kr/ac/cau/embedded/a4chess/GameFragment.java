@@ -3,6 +3,7 @@ package kr.ac.cau.embedded.a4chess;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import kr.ac.cau.embedded.a4chess.chess.Board;
+import kr.ac.cau.embedded.a4chess.chess.Board_ConditionChecker;
 import kr.ac.cau.embedded.a4chess.chess.Game;
 import kr.ac.cau.embedded.a4chess.chess.Player;
 
@@ -56,11 +59,10 @@ public class GameFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         Game.UI = this;
-
         View view = inflater.inflate(R.layout.fragment_game, container, false);
         gameStatusView = (TextView) view.findViewById(R.id.game_status);
         queenSideCastlingButton = (Button) view.findViewById(R.id.queen_castling_button);
@@ -68,6 +70,10 @@ public class GameFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // TODO QUUEN SIDE CASTLING
+                if(Board_ConditionChecker.isQueenSideCastlingAvailable(Game.currentPlayer()) != 0){
+                    Board.queenSideCastling();
+                    BoardView.view.invalidate();
+                }
             }
         });
         kingSideCastlingButton = (Button) view.findViewById(R.id.king_castling_button);
@@ -75,6 +81,10 @@ public class GameFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // TODO KING SIDE CASTLING
+                if(Board_ConditionChecker.isKingSideCastlingAvailable(Game.currentPlayer()) != 0) {
+                    Board.kingSideCastling();
+                    BoardView.view.invalidate();
+                }
             }
         });
 
