@@ -16,8 +16,6 @@ import android.view.ViewGroup;
 public class ChessFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
 
-    public static View view;
-
     public ChessFragment() {
         // Required empty public constructor
     }
@@ -45,7 +43,6 @@ public class ChessFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_chess, container, false);
         return inflater.inflate(R.layout.fragment_chess, container, false);
     }
 }

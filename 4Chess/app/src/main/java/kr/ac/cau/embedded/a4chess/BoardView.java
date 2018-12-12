@@ -16,8 +16,6 @@ import kr.ac.cau.embedded.a4chess.chess.pieces.Piece;
 
 public class BoardView extends View {
 
-    public static BoardView view;
-
     private final Paint boardPaint = new Paint();
     private final Paint textPaint = new Paint();
 
@@ -31,7 +29,6 @@ public class BoardView extends View {
     public BoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
         doubleTapGestureDetector = new GestureDetector(context, new DoubleTapListener());
-        view = this;
     }
 
     @Override

@@ -133,8 +133,6 @@ public class Board {
         }
 
         LcdPrintTurn.write();
-//        GameFragment.changeVisibleKingSideCastling();
-//        GameFragment.changeVisibleQueenSideCastling();
 
         return true;
     }
@@ -153,9 +151,6 @@ public class Board {
             BoardState[4][0] = king;
             BoardState[5][0] = rook;
 
-            BoardState[3][0] = null;
-            BoardState[6][0] = null;
-
             rook.position = new Coordinate(5, 0);
             king.position = new Coordinate(4, 0);
 
@@ -170,9 +165,6 @@ public class Board {
 
             BoardState[9][0] = king;
             BoardState[8][0] = rook;
-
-            BoardState[10][0] = null;
-            BoardState[7][0] = null;
 
             rook.position = new Coordinate(8, 0);
             king.position = new Coordinate(9, 0);
@@ -202,9 +194,6 @@ public class Board {
             BoardState[5][0] = king;
             BoardState[6][0] = rook;
 
-            BoardState[3][0] = null;
-            BoardState[7][0] = null;
-
             rook.position = new Coordinate(6, 0);
             king.position = new Coordinate(5, 0);
 
@@ -219,9 +208,6 @@ public class Board {
 
             BoardState[8][0] = king;
             BoardState[7][0] = rook;
-
-            BoardState[10][0] = null;
-            BoardState[6][0] = null;
 
             rook.position = new Coordinate(7, 0);
             king.position = new Coordinate(8, 0);

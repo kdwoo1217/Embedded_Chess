@@ -8,6 +8,7 @@
     <kr.ac.cau.embedded.a4chess.BoardView
         android:id="@+id/frag_board"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></kr.ac.cau.embedded.a4chess.BoardView>
+        android:layout_height="match_parent">
+    </kr.ac.cau.embedded.a4chess.BoardView>
 
 </FrameLayout>
