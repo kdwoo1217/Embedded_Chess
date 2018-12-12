@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     // client setting
     private Socket clientSocket;
     private DataInputStream clientIn;
+    private int tokenIndex;
     public static DataOutputStream clientOut;
     public static String clientMsg;
     public static String nickName;
@@ -80,8 +81,8 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
-    public void clientSend() {
-        String msg = nickName + " : " + "test!\n"; //transClientText.getText() + "\n";
+    public static void clientSend(String sendMsg) {
+        String msg = nickName + " : " + sendMsg;
 //        clientMsgBuilder.append(msg);
 //        clientText.setText(clientMsgBuilder.toString());
         try {
@@ -91,8 +92,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void serverSend() {
-        String msg = "Player1 : " + clientsMap.size() + " test!\n"; //transServerText.getText().toString() + "\n";
+    public static void serverSend(String sendMsg) {
+        String msg = nickName + " : " + sendMsg;
         serverMsg.append(msg);
         sendMessage(msg);
     }
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     while (true) {
-                        /** XXX 01. 첫번째. 서버가 할일 분담. 계속 접속받는것. */
+                        // client in
                         Log.v("", "waiting...");
                         try {
                             socket = serverSocket.accept();
@@ -145,9 +146,9 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         Log.v("", socket.getInetAddress() + " in.");
-                        msg = socket.getInetAddress() + " in.\n";
-                        msg += Integer.toString(clientsMap.size());
-                        msg += "players";
+                        msg = socket.getInetAddress().toString();// + " in.\n";
+                        //msg += Integer.toString(clientsMap.size());
+                        //msg += "players";
                         player_num = clientsMap.size() + 2;
                         handler.sendEmptyMessage(SERVER_TEXT_UPDATE);
 
@@ -164,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
                                     in = new DataInputStream(socket.getInputStream());
                                     nick = "Player" + Integer.toString(player_num);
                                     addClient(nick, out);
-                                    //player_num = clientsMap.size() + 1;
+                                    RoomFragment.player_update_display(msg); // ★★ TODO call update RoomFrag.
                                     p_num = Integer.toString(player_num);
                                     sendMessage(p_num + "(info_client)");
                                 } catch (IOException e) {
@@ -199,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
         clientsMap.remove(nick);
     }
 
-    public void sendMessage(String msg) {
+    public static void sendMessage(String msg) {
         Iterator<String> it = clientsMap.keySet().iterator();
         String key = "";
         while (it.hasNext()) {
@@ -255,29 +256,40 @@ public class MainActivity extends AppCompatActivity {
             switch (msgg.what) {
                 case SERVER_TEXT_UPDATE: { // server (Player1) Update Handler
                     serverMsg.append(msg);
+                    tokenIndex = msg.lastIndexOf('(');
+                    if (msg.charAt(tokenIndex + 6) == 'g') { // game status (TAG : (info_game))
+                        inputMsgGame(msg.substring(msg.lastIndexOf('P'), tokenIndex));
+                    }
+                    else if (msg.charAt(tokenIndex + 6) == 'm') { // chat status (TAG : (info_mesg))
+                        inputMsgChat(msg.substring(msg.lastIndexOf('P'), tokenIndex));
+                    }
+                    else if (msg.charAt(tokenIndex + 6) == '-') { // other status (Add by needs)
+                        // TODO implement additional token
+                    }
                     ///////////////// Refresh Part /////////////////
-                    RoomFragment.test_update_display(serverMsg.toString());
+                    // RoomFragment.test_update_display(serverMsg.toString());
                     // serverText.setText(serverMsg.toString());
                 }
                 break;
                 case CLIENT_TEXT_UPDATE: { // client (Player234) Update Handler
-                    if (clientMsg.charAt(clientMsg.lastIndexOf('(') + 6) == 'c') { // client name (TAG : (info_client)) // 파싱방식 수정 필요
+                    tokenIndex = clientMsg.lastIndexOf('(');
+                    if (clientMsg.charAt(tokenIndex + 6) == 'c') { // client name (TAG : (info_client))
                         if (nickName == "client") {
                             nickName = "Player" + Character.toString(clientMsg.charAt(clientMsg.lastIndexOf('(') - 1));
                         }
                     }
-                    else if (clientMsg.charAt(clientMsg.lastIndexOf('(') + 6) == 'g') { // game status (TAG : (info_game))
-                        // TODO board update
+                    else if (clientMsg.charAt(tokenIndex + 6) == 'g') { // game status (TAG : (info_game))
+                        inputMsgGame(clientMsg.substring(clientMsg.lastIndexOf('P'), tokenIndex));
                     }
-                    else if (clientMsg.charAt(clientMsg.lastIndexOf('(') + 6) == 'm') { // chat status (TAG : (info_mesg))
-                        // TODO chat update
+                    else if (clientMsg.charAt(tokenIndex + 6) == 'm') { // chat status (TAG : (info_mesg))
+                        inputMsgChat(clientMsg.substring(clientMsg.lastIndexOf('P'), tokenIndex));
                     }
-                    else if (clientMsg.charAt(clientMsg.lastIndexOf('(') + 6) == '-') { // other status (Add by needs)
-                        // TODO
+                    else if (clientMsg.charAt(tokenIndex + 6) == '-') { // other status (Add by needs)
+                        // TODO implement additional token
                     }
                     clientMsgBuilder.append(clientMsg); // MSG LOG DISPLAY (TEST)
                     ///////////////// Refresh Part /////////////////
-                    RoomFragment.test_update_display(clientMsgBuilder.toString());
+                    // RoomFragment.test_update_display(clientMsgBuilder.toString());
                     // clientText.setText(clientMsgBuilder.toString()); // 메세지 갱신
                 }
                 break;
@@ -285,5 +297,26 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private static void inputMsgGame(String s) {
+        int playerNum = s.charAt(s.indexOf('r') + 1) - '0'; // May calculate by procNum
+        String[] tokenizedGameInfo = s.split("#");
+        int[] gameInfo = new int[5];
+        for (int i = 0; i < 5; i++) {
+            // gameInfo[0] : procNum, gameInfo[1, 2] : beforeX, Y, gameInfo[3, 4] : afterX, Y
+            gameInfo[i] = Integer.parseInt(tokenizedGameInfo[i]);
+        }
+        // TODO board update
+    }
 
+    private static void inputMsgChat(String s) {
+        int playerNum = s.charAt(s.indexOf('r') + 1) - '0';
+        String chatContent = s.substring(10, s.length()); // Player1 : xxx // 5'r' 6'1' 7' ' 8':' 9' ' 10'x'
+        // TODO chat update
+        ChatFragment.receivedPlayerNum = playerNum;
+        ChatFragment.receivedMessage = chatContent;
+    }
+
+    private static void inputMsgOther(String s) {
+        // no decision
+    }
 }
