@@ -38,6 +38,10 @@ public class ChatFragment extends Fragment {
     private ArrayAdapter<ChatMessage> adapter;
 
     private String message;
+    private int oldPlayerNum = -1;
+    private String oldMessage = "\0";
+    public static int receivedPlayerNum = -1;
+    public static String receivedMessage = "\0";
 
     public ChatFragment() {
         // Required empty public constructor
@@ -80,10 +84,15 @@ public class ChatFragment extends Fragment {
             while(true){
                 try{
                     int clicked_button = DeviceController.PushbuttonRead();
-
                     sendMessage(clicked_button);
-
                     Thread.sleep(200);
+                }
+                catch (Exception e){
+
+                }
+                try{
+                    // check message received
+                    receiveMessage();
                 }
                 catch (Exception e){
 
@@ -95,54 +104,79 @@ public class ChatFragment extends Fragment {
         return view;
     }
 
+    private void receiveMessage() {
+        if (oldPlayerNum == receivedPlayerNum && oldMessage.equals(receivedMessage)) {
+            return;
+        }
+        Log.d("chat test", "" + oldPlayerNum);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                oldPlayerNum = receivedPlayerNum;
+                oldMessage = receivedMessage;
+                ChatMessage chatMessage = new ChatMessage("Player" + Integer.toString(receivedPlayerNum) + " : " + receivedMessage, true);
+                chatMessages.add(chatMessage);
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
+
     private void sendMessage(int macro){
 
-        if(macro == 0){
+        Log.d("macro", "" + macro);
+        if(macro < 1) {
             return ;
         }
 
         message = new String("");
-        if(macro == 1){
+        if(macro == 1) {
             message = getResources().getString(R.string.macro1);
             message = message.substring(2,message.length());
         }
-        else if(macro == 10){
+        else if(macro == 10) {
             message = getResources().getString(R.string.macro2);
             message = message.substring(2,message.length());
         }
-        else if(macro == 100){
+        else if(macro == 100) {
             message = getResources().getString(R.string.macro3);
             message = message.substring(2,message.length());
         }
-        else if(macro == 1000){
+        else if(macro == 1000) {
             message = getResources().getString(R.string.macro4);
             message = message.substring(2,message.length());
         }
-        else if(macro == 10000){
+        else if(macro == 10000) {
             message = getResources().getString(R.string.macro5);
             message = message.substring(2,message.length());
         }
-        else if(macro == 100000){
+        else if(macro == 100000) {
             message = getResources().getString(R.string.macro6);
             message = message.substring(2,message.length());
         }
-        else if(macro == 1000000){
+        else if(macro == 1000000) {
             message = getResources().getString(R.string.macro7);
             message = message.substring(2,message.length());
         }
-        else if(macro == 10000000){
+        else if(macro == 10000000) {
             message = getResources().getString(R.string.macro8);
             message = message.substring(2,message.length());
         }
-        else if(macro == 100000000){
+        else if(macro == 100000000) {
             message = getResources().getString(R.string.macro9);
             message = message.substring(2,message.length());
         }
-
+        
+        if (MainActivity.nickName == "Player1") {
+            // ((MainActivity) getActivity()).serverSend();
+        }
+        else {
+            // ((MainActivity) getActivity()).clientSend();
+        }
+        
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ChatMessage chatMessage = new ChatMessage("player1 : " + message, true);
+                ChatMessage chatMessage = new ChatMessage("Player1 : " + message, true);
                 chatMessages.add(chatMessage);
                 adapter.notifyDataSetChanged();
             }
@@ -150,7 +184,3 @@ public class ChatFragment extends Fragment {
 
     }
 }
-
-
-
-
