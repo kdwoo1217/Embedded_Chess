@@ -71,7 +71,7 @@ public class GameFragment extends Fragment {
             public void onClick(View v) {
                 // TODO QUUEN SIDE CASTLING
                 if(Board_ConditionChecker.isQueenSideCastlingAvailable(Game.currentPlayer()) != 0){
-                    Board.queenSideCastling();
+                    Board.queenSideCastling(Game.myPlayerId);
                     BoardView.view.invalidate();
                 }
             }
@@ -82,7 +82,7 @@ public class GameFragment extends Fragment {
             public void onClick(View v) {
                 // TODO KING SIDE CASTLING
                 if(Board_ConditionChecker.isKingSideCastlingAvailable(Game.currentPlayer()) != 0) {
-                    Board.kingSideCastling();
+                    Board.kingSideCastling(Game.myPlayerId);
                     BoardView.view.invalidate();
                 }
             }
